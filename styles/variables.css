@@ -1,0 +1,19 @@
+:root {
+  --bg-primary: #232323;
+  --text-primary: #fff
+}
+
+.dark {
+  --bg-primary: #232323;
+  --text-primary: #fff
+}
+
+.light {
+  --bg-primary: #fff;
+  --text-primary: #000
+}
+
+.golden {
+  --bg-primary: #232323;
+  --text-primary: #fff89d;
+}
