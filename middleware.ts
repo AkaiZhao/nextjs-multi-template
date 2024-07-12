@@ -10,6 +10,7 @@ export function middleware(request: NextRequest) {
   const response = NextResponse.next()
   const middlewares = [i18nMiddleware, themeMiddleware]
 
+  // 將middlewares透過遞迴呼叫，並傳回NextResponse
   const runner = async (middlewares: Function[], response: NextResponse, request: NextRequest) => {
     if (!middlewares.length) return response
     const middleware = middlewares.shift()
