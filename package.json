@@ -10,10 +10,12 @@
     "gen-styles": "node scripts/genStyles/index.js"
   },
   "dependencies": {
+    "@formatjs/intl-localematcher": "^0.5.4",
+    "accept-language": "^3.0.18",
     "clsx": "^2.1.1",
     "i18next": "^23.11.5",
+    "i18next-resources-to-backend": "^1.2.1",
     "next": "14.2.4",
-    "next-i18next": "^15.3.0",
     "react": "^18",
     "react-dom": "^18",
     "react-i18next": "^14.1.2",

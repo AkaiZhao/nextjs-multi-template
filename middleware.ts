@@ -1,10 +1,23 @@
 import { NextResponse, NextRequest } from 'next/server'
+import { i18nMiddleware } from '@/middlewares/i18n'
+import { themeMiddleware } from '@/middlewares/theme'
+
+export const config = {
+  matcher: ['/((?!api|_next/static|_next/image|assets|favicon.ico|sw.js|site.webmanifest).*)'],
+}
 
 export function middleware(request: NextRequest) {
-  // TODO: Fetch theme from backend
-  const theme = 'golden'
   const response = NextResponse.next()
-  response.cookies.set('theme', theme)
+  const middlewares = [i18nMiddleware, themeMiddleware]
 
-  return response
+  const runner = async (middlewares: Function[], response: NextResponse, request: NextRequest) => {
+    if (!middlewares.length) return response
+    const middleware = middlewares.shift()
+    if (middleware) {
+      await middleware(response, request)
+      return runner(middlewares, response, request)
+    }
+  }
+
+  return runner(middlewares, response, request)
 }
