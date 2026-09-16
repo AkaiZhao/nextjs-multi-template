@@ -10,11 +10,11 @@ export default function Home(props: HomeProps) {
         <h1>{d.intro}</h1>
         <div>
           <p>{d.introBody}</p>
-          <Link className="button button-primary" href={`/${locale}/catalog`}>
-            {d.browse}
-          </Link>
-          <Link className="hero-secondary" href={`/${locale}/settings`}>
+          <Link className="button button-primary" href={`/${locale}/settings`}>
             {d.customize}
+          </Link>
+          <Link className="hero-secondary" href={`/${locale}/catalog`}>
+            {d.browse}
           </Link>
         </div>
       </div>

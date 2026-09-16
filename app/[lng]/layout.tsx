@@ -10,7 +10,7 @@ import '../../styles/globals.css'
 type Props = { children: React.ReactNode; params: Promise<{ lng: string }> }
 export async function generateMetadata({ params }: Pick<Props, 'params'>): Promise<Metadata> {
   const { lng } = await params
-  if (!isLocale(lng)) return { title: 'Form & Field' }
+  if (!isLocale(lng)) return { title: 'Multi Template Demo' }
   const { t } = await getTranslation(lng)
   return {
     title: { default: t('brand'), template: `%s | ${t('brand')}` },

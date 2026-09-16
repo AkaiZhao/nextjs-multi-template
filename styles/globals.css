@@ -10,7 +10,7 @@
   --color-line: var(--line);
   --color-accent: var(--accent);
   --color-on-accent: var(--on-accent);
-  --font-sans: 'Trebuchet MS', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+  --font-sans: Arial, 'PingFang TC', 'Microsoft JhengHei', sans-serif;
 }
 :root,
 [data-mode='light'] {
@@ -21,7 +21,7 @@
   --line: #ccd4de;
   --accent: #2764d6;
   --on-accent: #fff;
-  --display-font: Georgia, 'Songti TC', serif;
+  --display-font: var(--font-sans);
   --card-radius: 1rem;
   --content-width: 1320px;
 }
@@ -149,11 +149,11 @@
 }
 .wordmark {
   display: inline-block;
-  font-size: 1.65rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  letter-spacing: -0.06em;
+  letter-spacing: -0.02em;
   line-height: 1.1;
-  white-space: nowrap;
+  max-width: 100%;
 }
 .wordmark > span:not([aria-hidden]) {
   display: block;
@@ -244,140 +244,111 @@
   font-size: 0.9rem;
 }
 [data-section] {
-  margin-bottom: 5rem;
+  margin-bottom: 2.5rem;
 }
-.featured-work {
-  display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  border-radius: var(--card-radius);
-  overflow: hidden;
-  background: var(--surface);
-}
-.featured-image {
-  min-width: 0;
-}
-.featured-image img {
-  width: 100%;
-  height: 100%;
-  min-height: 300px;
-  object-fit: cover;
-}
-.featured-copy {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 3rem;
-  gap: 1rem;
-}
-.featured-copy > span {
-  font-size: 0.8rem;
-  color: var(--muted);
-}
-.featured-copy h3 {
-  font: 400 clamp(2rem, 4vw, 3.4rem)/1.1 var(--display-font);
-}
-.featured-copy p {
-  color: var(--muted);
-  max-width: 34ch;
-}
-.featured-copy .text-link {
-  margin-top: 2rem;
-}
-.project-grid {
+.config-flow {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2rem;
-}
-.project-art {
-  position: relative;
-  overflow: hidden;
-  border-radius: var(--card-radius);
-  aspect-ratio: 4/3;
+  list-style-position: inside;
+  padding: 1.5rem;
   background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
 }
-.project-art > img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.config-flow li::marker {
+  color: var(--muted);
 }
-.favorite-button {
-  position: absolute;
-  right: 0.85rem;
-  top: 0.85rem;
+.config-flow h3 {
+  display: inline;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.config-flow p {
+  margin: 0.6rem 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.config-flow code {
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}
+.project-grid,
+.compact-grid {
   display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border: 1px solid #ffffff88;
-  border-radius: 50%;
-  background: #ffffffe8;
-  color: #263849;
+  grid-template-columns: 1fr;
+  gap: 0;
 }
-.favorite-button[aria-pressed='true'] {
-  background: #263849;
-  color: #fff;
+.project-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.project-card:first-child {
+  border-top: 1px solid var(--line);
 }
 .project-info {
-  padding: 1.1rem 0.15rem;
+  min-width: 0;
 }
 .project-meta {
-  display: flex;
-  justify-content: space-between;
   color: var(--muted);
-  font-size: 0.75rem;
-  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
 }
 .project-info h3 {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  letter-spacing: -0.03em;
+  margin: 0.25rem 0;
 }
 .project-info p {
-  margin-top: 0.4rem;
-  font-size: 0.85rem;
   color: var(--muted);
-  max-width: 45ch;
+  max-width: 75ch;
+  font-size: 0.9rem;
+}
+.favorite-button {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  background: var(--surface);
+  color: var(--ink);
+}
+.favorite-button[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--canvas);
+}
+.compact-grid .project-card {
+  padding: 0.85rem 0;
 }
 .about-section {
-  display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  align-items: center;
-  gap: 4rem;
   border-top: 1px solid var(--line);
-  padding-top: 4rem;
-}
-.about-symbol {
-  font:
-    italic 180px/0.8 Georgia,
-    serif;
-  color: var(--accent);
-  text-align: center;
-  letter-spacing: -0.08em;
-}
-.about-symbol span {
-  font-size: 90px;
-  vertical-align: middle;
-  margin: 0 0.1em;
+  padding-top: 1.5rem;
 }
 .about-section h2 {
-  color: var(--muted);
-  font-size: 0.85rem;
-  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  font-weight: 600;
 }
 .about-section h3 {
-  font: 400 clamp(1.8rem, 3vw, 2.8rem)/1.25 var(--display-font);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 1rem;
 }
 .about-section p {
-  margin: 1rem 0 1.5rem;
+  margin: 0.7rem 0 1rem;
   color: var(--muted);
-  max-width: 60ch;
+  max-width: 80ch;
 }
 .page-heading {
-  padding: 4rem 0 3rem;
+  padding: 2.5rem 0 2rem;
   max-width: 900px;
 }
 .page-heading h1 {
-  font: 400 clamp(2.5rem, 5vw, 4.8rem)/1.15 var(--display-font);
+  font: 600 clamp(1.8rem, 3vw, 2.5rem)/1.15 var(--display-font);
   letter-spacing: -0.04em;
 }
 .page-heading p {
@@ -414,22 +385,6 @@
 .catalog-summary a {
   text-decoration: underline;
 }
-.compact-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.3rem;
-}
-.project-card-compact {
-  background: var(--surface);
-  padding: 0.6rem;
-  border-radius: 0.6rem;
-}
-.project-card-compact .project-info {
-  padding: 0.8rem;
-}
-.project-card-compact .project-info h3 {
-  font-size: 1.3rem;
-}
 .empty-state {
   padding: 5rem 1rem;
   text-align: center;
@@ -456,12 +411,6 @@
   .site-navigation {
     gap: 1rem;
   }
-  .project-grid {
-    gap: 1.2rem;
-  }
-  .featured-copy {
-    padding: 2rem;
-  }
 }
 @media (max-width: 640px) {
   .wordmark {
@@ -482,24 +431,10 @@
     margin-left: 0;
     display: block;
   }
-  .featured-work,
-  .about-section {
+  .config-flow {
     grid-template-columns: 1fr;
   }
-  .featured-copy {
-    padding: 1.7rem;
-  }
-  .featured-image img {
-    min-height: 0;
-  }
-  .featured-copy .text-link {
-    margin-top: 0.7rem;
-  }
-  .project-grid,
-  .compact-grid {
-    grid-template-columns: 1fr;
-    gap: 1.4rem;
-  }
+
   [data-section] {
     margin-bottom: 3rem;
   }
@@ -508,12 +443,6 @@
   }
   .section-heading a {
     font-size: 0.85rem;
-  }
-  .about-symbol {
-    font-size: 100px;
-  }
-  .about-symbol span {
-    font-size: 50px;
   }
   .about-section {
     gap: 2.5rem;

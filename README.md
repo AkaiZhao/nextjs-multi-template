@@ -1,20 +1,20 @@
-# Form & Field — Next.js Multi-template Portfolio
+# Multi Template Demo
 
 以 **Next.js 為核心**的多版型架構作品：同一套路由、資料與功能，套用不同布局；透過獨立配置頁調整版型、配色與內容，並由伺服器讀取 cookie 產生初始畫面。
 
-A server-rendered portfolio playground with interchangeable layouts, shared features, and cookie-backed configuration.
+A frontend architecture demo built with Next.js, interchangeable templates, shared features, and live configuration JSON.
 
-![Gallery template](docs/screenshots/gallery.png)
+![Standard template](docs/screenshots/gallery.png)
 
 ## 可以試什麼
 
-- **兩種版型**：`default`（藝廊）與 `studio`（工作室），各自擁有 layout、pages 與 styles。
+- **兩種版型**：`default`（標準）與 `studio`（緊湊），各自擁有 layout、pages 與 styles。
 - **獨立配置頁**：版型、三組配色、淺色／深色、自訂強調色、首頁區塊排序、預設語言、導覽順序／顯示／位置。
 - **完整請求流程**：配置經過 server action 驗證後寫入 HttpOnly cookie；重新整理、直接開啟內頁，第一份 HTML 就反映設定。
-- **共用功能**：搜尋、分類與收藏不隨版型複製；搜尋條件放在 URL，收藏存於這個瀏覽器的 localStorage。
+- **共用功能**：範例搜尋、分類與收藏不隨版型複製；搜尋條件放在 URL，收藏存於這個瀏覽器的 localStorage。
 - **中英文示範**：`zh-TW` 與 `en-US`，語系切換保留所在頁面與搜尋參數。
 - **響應式與可存取性**：手機／桌機布局、鍵盤焦點、欄位標籤、排序按鈕、空狀態與錯誤邊界。
-- **本地示範內容**：六個虛構作品與原創 SVG 圖像，不需要帳號、API key 或後端服務。
+- **本地示範內容**：六個實作功能說明，採用簡潔清單呈現，不需要帳號、API key 或後端服務。
 
 ## 本機啟動
 
@@ -33,12 +33,17 @@ npm run build
 npm run start
 ```
 
+## 面試展示方式
+
+先在首頁說明配置如何從表單經過伺服器驗證、cookie 保存到 SSR 呈現。接著開啟配置編輯器，調整版型、首頁順序與導覽顯示，對照即時 JSON；儲存後重新整理，確認配置持續生效。最後切換版型並操作搜尋與收藏，展示共用層如何與各版型分離。
+
 ## 配置流程
 
 1. 進入 `/{lng}/settings`，調整設定並查看草稿預覽。
-2. 點選「儲存設定」，伺服器驗證後寫入 `site-config` cookie，並套用所選預設語言。
-3. 返回首頁或直接開啟內頁，驗證版型、首頁順序與導覽內容。
-4. 「恢復預設」會移除配置 cookie；不會清除作品收藏。
+2. 即時查看設定 JSON，可直接複製作為面試說明範例；JSON 對應表單草稿，並未寫入伺服器檔案。可展開配置預覽對照排版。
+3. 點選「儲存設定」，伺服器驗證後寫入 `site-config` cookie，並套用所選預設語言。
+4. 返回首頁或直接開啟內頁，驗證版型、首頁順序與導覽內容。
+5. 「恢復預設」會移除配置 cookie；不會清除作品收藏。
 
 | 設定                  | 值／用途                                               |
 | --------------------- | ------------------------------------------------------ |
@@ -184,5 +189,5 @@ E2E 會在 `3100` 啟動 production server，因此需先執行 build 並保持�
 - GitHub 用於原始碼展示；網站需要支援 Next.js server 的環境。因使用 request cookies 與 Server Actions，不能直接使用 GitHub Pages 的靜態 export。
 - 配置與收藏都是**單一瀏覽器的偏好**，不是遠端後台或跨裝置同步。
 - cookie 保存一年；伺服器限制格式、長度與可設定的選項，未知版本或損壞值回退預設配置。
-- 作品資料是本地示範 adapter，沒有真實 API、會員登入、交易或外部服務。
+- 功能範例資料是本地示範 adapter，沒有真實 API、會員登入、交易或外部服務。
 - 實際網址與發布狀態見上方「Vercel 網址說明」。

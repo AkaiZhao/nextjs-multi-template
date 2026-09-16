@@ -1,79 +1,67 @@
 import type { Project } from './types'
 const projects: Project[] = [
   {
-    id: 'tidal-atlas',
-    title: 'Tidal Atlas',
-    category: 'digital',
-    year: '2026',
-    image: '/art/tidal.svg',
-    tags: ['ocean', 'mapping', '海洋'],
-    description: {
-      'en-US': 'A quieter way to explore the rhythm of the coast.',
-      'zh-TW': '用更安靜的方式，探索海岸與潮汐的節奏。',
-    },
-  },
-  {
-    id: 'common-ground',
-    title: 'Common Ground',
+    id: 'template-registry',
+    title: 'Template registry',
     category: 'identity',
-    year: '2026',
-    image: '/art/ground.svg',
-    tags: ['community', 'type', '社群'],
+    tags: ['templates', 'registry', '版型'],
     description: {
-      'en-US': 'A visual language for places that bring us together.',
-      'zh-TW': '為讓人相聚的地方，打造共同的視覺語言。',
+      'en-US': 'Each template exports its own layout and pages through one shared registry.',
+      'zh-TW': '透過共用 registry 載入版型，各版型各自實作 layout、pages 與 styles。',
     },
   },
   {
-    id: 'soft-signal',
-    title: 'Soft Signal',
-    category: 'experiment',
-    year: '2026',
-    image: '/art/signal.svg',
-    tags: ['sound', 'motion', '聲音'],
-    description: {
-      'en-US': 'Making room for the shape of a sound.',
-      'zh-TW': '讓聲音有形狀，也讓想像有空間。',
-    },
-  },
-  {
-    id: 'paper-trails',
-    title: 'Paper Trails',
-    category: 'digital',
-    year: '2025',
-    image: '/art/paper.svg',
-    tags: ['reading', 'paper', '閱讀'],
-    description: {
-      'en-US': 'A reading journal for the thoughts between the lines.',
-      'zh-TW': '把字裡行間的想法，收進閱讀日誌。',
-    },
-  },
-  {
-    id: 'still-life',
-    title: 'Still / Life',
+    id: 'server-configuration',
+    title: 'Server configuration',
     category: 'identity',
-    year: '2025',
-    image: '/art/still.svg',
-    tags: ['objects', 'space', '生活'],
+    tags: ['cookie', 'SSR', '設定'],
     description: {
-      'en-US': 'Everyday objects, seen from a different angle.',
-      'zh-TW': '換一個角度，重新看見日常物件。',
+      'en-US': 'Validate SiteConfig on the server and read its cookie for the initial render.',
+      'zh-TW': '在伺服器驗證 SiteConfig，首次渲染就讀取 cookie 套用版型配置。',
     },
   },
   {
-    id: 'after-hours',
-    title: 'After Hours',
-    category: 'experiment',
-    year: '2025',
-    image: '/art/hours.svg',
-    tags: ['light', 'color', '光線'],
+    id: 'shared-favorites',
+    title: 'Shared favorites',
+    category: 'digital',
+    tags: ['zustand', 'localStorage', '收藏'],
     description: {
-      'en-US': 'An experiment in color after the city falls quiet.',
-      'zh-TW': '城市安靜下來之後，一場關於色彩的實驗。',
+      'en-US': 'Share a Zustand store across templates and persist favorites in this browser.',
+      'zh-TW': '各版型共用 Zustand store，收藏透過 localStorage 保留在瀏覽器。',
+    },
+  },
+  {
+    id: 'url-filters',
+    title: 'URL filters',
+    category: 'digital',
+    tags: ['search', 'URL', '搜尋'],
+    description: {
+      'en-US': 'Keep search and category filters in the URL for reloads and shareable links.',
+      'zh-TW': '搜尋與分類保存在 URL，重新整理或分享連結都能保留條件。',
+    },
+  },
+  {
+    id: 'theme-tokens',
+    title: 'Theme tokens',
+    category: 'experiment',
+    tags: ['tailwind', 'CSS', '配色'],
+    description: {
+      'en-US': 'Use Tailwind CSS 4 and semantic CSS variables for palettes and light or dark mode.',
+      'zh-TW': '使用 Tailwind CSS 4 與語意 CSS 變數切換配色、明暗模式及自訂強調色。',
+    },
+  },
+  {
+    id: 'locale-routing',
+    title: 'Locale routing',
+    category: 'experiment',
+    tags: ['i18n', 'locale', '語系'],
+    description: {
+      'en-US': 'Use explicit URLs, saved preferences, and browser language to resolve the locale.',
+      'zh-TW': '依網址、已儲存偏好與瀏覽器語言決定語系，示範繁體中文與英文。',
     },
   },
 ]
-/** Local adapter. A future HTTP adapter can preserve this domain return type. */
+/** Local examples of this project's implemented frontend capabilities. */
 export async function getProjects(): Promise<Project[]> {
   return projects
 }

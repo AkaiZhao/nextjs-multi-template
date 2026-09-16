@@ -12,9 +12,9 @@ test('settings survive first HTML, reload and direct routes; reset restores defa
   await page.getByLabel('Accent color', { exact: true }).fill('#c4a8ff')
   await page.getByLabel('Default language').selectOption('en-US')
   await page.getByLabel('Navigation position').selectOption('sidebar')
-  await page.getByRole('button', { name: 'Move About this collection up' }).click()
-  await page.getByRole('button', { name: 'Move About this collection up' }).click()
-  await page.getByLabel('Show Catalog').uncheck()
+  await page.getByRole('button', { name: 'Move Implementation notes up' }).click()
+  await page.getByRole('button', { name: 'Move Implementation notes up' }).click()
+  await page.getByLabel('Show Examples').uncheck()
   await page.getByRole('button', { name: 'Move Favorites up' }).click()
   await page.getByRole('button', { name: 'Move Favorites up' }).click()
   await page.getByRole('button', { name: 'Save configuration' }).click()
@@ -24,7 +24,7 @@ test('settings survive first HTML, reload and direct routes; reset restores defa
   await expect(page.locator('body')).toHaveAttribute('data-mode', 'dark')
   await expect(page.locator('main [data-section]').first()).toHaveAttribute('data-section', 'about')
   const navigation = page.getByRole('navigation', { name: 'Main navigation' })
-  await expect(navigation.getByRole('link', { name: 'Catalog', exact: true })).toHaveCount(0)
+  await expect(navigation.getByRole('link', { name: 'Examples', exact: true })).toHaveCount(0)
   await expect(navigation.getByRole('link').first()).toHaveText('Favorites')
   await page.reload()
   await expect(page.locator('body')).toHaveAttribute('data-theme', 'plum')
@@ -47,28 +47,28 @@ test('settings survive first HTML, reload and direct routes; reset restores defa
 
 test('shared search and favorites survive template changes', async ({ page }) => {
   await page.goto('/en-US/catalog')
-  await page.getByRole('searchbox').fill('tidal')
+  await page.getByRole('searchbox').fill('registry')
   await page.getByRole('button', { name: 'Search', exact: true }).click()
-  await expect(page).toHaveURL(/q=tidal/)
+  await expect(page).toHaveURL(/q=registry/)
   await expect(page.locator('[data-project-card]')).toHaveCount(1)
-  await page.getByRole('button', { name: 'Save Tidal Atlas' }).click()
+  await page.getByRole('button', { name: 'Save Template registry' }).click()
   await page.goto('/en-US/settings')
   await page.getByRole('combobox', { name: 'Template', exact: true }).selectOption('studio')
   await page.getByLabel('Default language').selectOption('en-US')
   await page.getByRole('button', { name: 'Save configuration' }).click()
   await page.goto('/en-US/favorites')
   await expect(page.locator('[data-project-card]')).toHaveCount(1)
-  await expect(page.getByRole('heading', { name: 'Tidal Atlas', exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Template registry', exact: true })).toBeVisible()
   await page.reload()
   await expect(page.locator('[data-project-card]')).toHaveCount(1)
-  await page.getByRole('button', { name: 'Unsave Tidal Atlas' }).click()
-  await expect(page.getByText('Your collection starts here.')).toBeVisible()
+  await page.getByRole('button', { name: 'Unsave Template registry' }).click()
+  await expect(page.getByText('No saved examples yet.')).toBeVisible()
 })
 
 test('locale boundaries, empty search and mobile layout', async ({ page }) => {
   await page.goto('/zh-HK/catalog?q=missing')
   await expect(page).toHaveURL(/\/zh-TW\/catalog\?q=missing$/)
-  await expect(page.getByText('找不到符合條件的作品。')).toBeVisible()
+  await expect(page.getByText('找不到符合條件的範例。')).toBeVisible()
   await page.getByRole('link', { name: 'English', exact: true }).click()
   await expect(page).toHaveURL(/\/en-US\/catalog\?q=missing$/)
   await page.setViewportSize({ width: 390, height: 844 })
@@ -186,7 +186,7 @@ test('custom light or dark accents keep focus and button boundaries visible', as
       },
     ])
     await page.goto('/en-US')
-    const button = page.getByRole('link', { name: 'Explore the collection', exact: true }).first()
+    const button = page.getByRole('link', { name: 'Edit configuration', exact: true }).first()
     await button.focus()
     const colors = await button.evaluate((element) => {
       const style = getComputedStyle(element)
@@ -201,4 +201,69 @@ test('custom light or dark accents keep focus and button boundaries visible', as
     expect(colors.outline).not.toBe(colors.background)
     expect(colors.border).not.toBe(colors.background)
   }
+})
+
+test('configuration JSON follows the draft and matches the saved cookie', async ({
+  page,
+  context,
+}) => {
+  await page.goto('/en-US/settings')
+  const json = page.getByRole('textbox', { name: 'Configuration JSON', exact: true })
+  await expect(json).toBeVisible()
+  await page.getByRole('combobox', { name: 'Template', exact: true }).selectOption('studio')
+  await page.getByLabel('Color palette').selectOption('forest')
+  await page.getByLabel('Default language').selectOption('en-US')
+  await page.getByRole('button', { name: 'Move Implementation notes up' }).click()
+  await page.getByLabel('Show Favorites').uncheck()
+  const draft = JSON.parse(await json.inputValue())
+  expect(draft.name).toBe('studio')
+  expect(draft.theme).toBe('forest')
+  expect(draft.homeSections).toEqual(['featured', 'about', 'collection'])
+  expect(
+    draft.navigation.items.find((item: { id: string }) => item.id === 'favorites').enabled,
+  ).toBe(false)
+  expect((await context.cookies()).some((cookie) => cookie.name === 'site-config')).toBe(false)
+  await page.evaluate(() =>
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: {
+        writeText: async (text: string) => {
+          ;(window as unknown as { copiedJson: string }).copiedJson = text
+        },
+      },
+    }),
+  )
+  await page.getByRole('button', { name: 'Copy JSON', exact: true }).click()
+  expect(await page.evaluate(() => (window as unknown as { copiedJson: string }).copiedJson)).toBe(
+    await json.inputValue(),
+  )
+  await expect(page.getByText('JSON copied.', { exact: true })).toBeVisible()
+  await page.getByLabel('Accent color', { exact: true }).fill('#bad')
+  await expect(
+    page.getByText('Draft contains invalid values. Correct them before saving.', { exact: true }),
+  ).toBeVisible()
+  expect(JSON.parse(await json.inputValue()).accent).toBe('#bad')
+  await expect(page.getByText('JSON copied.', { exact: true })).toHaveCount(0)
+  await page.getByLabel('Accent color', { exact: true }).fill('#123456')
+  const saved = JSON.parse(await json.inputValue())
+  await page.getByRole('button', { name: 'Save configuration' }).click()
+  await expect(page.getByRole('status')).toContainText('saved')
+  const cookie = (await context.cookies()).find((cookie) => cookie.name === 'site-config')!
+  expect(JSON.parse(decodeURIComponent(cookie.value))).toEqual(saved)
+  await page.reload()
+  expect(JSON.parse(await json.inputValue())).toEqual(saved)
+  await page.evaluate(() =>
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: {
+        writeText: async () => {
+          throw new Error('denied')
+        },
+      },
+    }),
+  )
+  await page.getByRole('button', { name: 'Copy JSON', exact: true }).click()
+  await expect(
+    page.getByText('Copy unavailable. Select the JSON and copy it manually.', { exact: true }),
+  ).toBeVisible()
 })

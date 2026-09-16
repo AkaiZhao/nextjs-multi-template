@@ -9,9 +9,6 @@ export default function StudioLayout({ children, ...context }: LayoutProps) {
     <div className={styles.shell} data-navigation={config.navigation.position}>
       <header className={styles.header}>
         <Link className="wordmark" href={`/${locale}`}>
-          <span className={styles.monogram} aria-hidden="true">
-            f/f
-          </span>
           {d.brand}
           <span>{d.tagline}</span>
         </Link>

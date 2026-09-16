@@ -30,7 +30,7 @@ Language priority: explicit supported URL segment, then valid saved default, the
 
 The server validates configuration, chooses a template from explicit imports, sets body attributes and CSS variables, and supplies the initial localized content. No browser-only theme detection is required for the first render. Reading request cookies makes these pages request-rendered; this application requires a Next.js server and does not support static export to GitHub Pages.
 
-The settings form owns a local draft. Saving uses a Server Action, validates on the server, sets the cookie, revalidates the layout and redirects to the configured default language. Navigation, refresh and first HTML therefore use the same state.
+The settings form owns a local draft. ConfigJson renders that exact draft as formatted, read-only JSON and copies it to the clipboard on request; unavailable clipboard access falls back to manual selection. Invalid draft values remain visible and are labeled invalid. This preview does not write a server-side JSON file. Saving uses a Server Action, validates on the server, sets the cookie, revalidates the layout and redirects to the configured default language. Navigation, refresh and first HTML therefore use the same state.
 
 The shared favorites store is created per provider. Browser storage is hydrated after mount, with a loading state, to prevent mismatching server HTML or sharing a user's state between requests. Search and category are URL state; template components never own independent copies of business rules.
 
@@ -51,4 +51,4 @@ Next owns the route table; templates supply presentation slots. Adding a page me
 
 ## Demo content and limits
 
-All project entries are fictional portfolio examples and all illustrations are local geometric artwork. No reference-project business APIs, brand files or assets are included. Search uses local data, favorites use localStorage, and configuration uses a cookie. These mechanisms intentionally demonstrate architecture without a remote backend.
+The catalog describes six frontend capabilities implemented in this repository, using plain feature lists instead of fictional projects or illustrations. No reference-project business APIs, brand files or assets are included. Search uses local data, favorites use localStorage, and configuration uses a cookie. These mechanisms intentionally demonstrate architecture without a remote backend.

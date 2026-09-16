@@ -8,11 +8,11 @@ export default function Home(props: HomeProps) {
     <>
       <div className={styles.hero}>
         <div>
-          <p>{d.collectionSize}</p>
           <h1>{d.intro}</h1>
+          <p>{d.introBody}</p>
         </div>
-        <Link className="button button-primary" href={`/${locale}/catalog`}>
-          {d.browse}
+        <Link className="button button-primary" href={`/${locale}/settings`}>
+          {d.customize}
         </Link>
       </div>
       <HomeSections {...props} compact />

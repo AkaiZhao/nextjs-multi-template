@@ -5,7 +5,5 @@ export type Project = {
   title: string
   description: Record<Locale, string>
   category: Category
-  year: string
-  image: string
   tags: string[]
 }

@@ -15,8 +15,8 @@ describe('homepage with an empty service response', () => {
         projects: [],
       }),
     )
-    expect(html).toContain('About this collection')
-    expect(html).toContain('More work is on the way.')
+    expect(html).toContain('Implementation notes')
+    expect(html).toContain('No examples available.')
     expect(html).not.toContain('data-project-card')
   })
 })
