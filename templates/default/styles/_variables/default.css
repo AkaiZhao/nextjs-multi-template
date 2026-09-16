@@ -1,0 +1,5 @@
+body[data-template='default'] {
+  --display-font: Georgia, 'Noto Serif TC', 'Songti TC', serif;
+  --card-radius: 1rem;
+  --content-width: 1320px;
+}

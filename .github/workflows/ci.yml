@@ -1,0 +1,114 @@
+name: Verify and deploy portfolio
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Deploy through Actions (requires Vercel secrets)'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-results
+          path: test-results/
+          retention-days: 7
+
+  deploy-production:
+    name: Deploy to Vercel Production
+    needs: verify
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: vercel-production
+      cancel-in-progress: false
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Validate deployment secrets
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        shell: bash
+        run: |
+          for key in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [ -z "${!key}" ]; then
+              echo "::error::Missing GitHub Actions secret: $key"
+              exit 1
+            fi
+          done
+      - run: npm ci
+      - name: Install pinned Vercel CLI
+        run: npm install --global vercel@59.18.0
+      - name: Pull production configuration
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+      - name: Build Vercel production artifact
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --prod --token="$VERCEL_TOKEN"
+      - run: npx playwright install --with-deps chromium
+      - name: Test production build before publishing
+        run: npm run test:e2e
+      - name: Deploy the prebuilt artifact
+        id: deploy
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        shell: bash
+        run: |
+          current_main=$(git ls-remote origin refs/heads/main | cut -f1)
+          if [ "$current_main" != "$GITHUB_SHA" ]; then
+            echo "::error::main advanced since this run started; deploy the current main commit instead."
+            exit 1
+          fi
+          deployment_url=$(vercel deploy --prebuilt --prod --yes --token="$VERCEL_TOKEN")
+          if [[ ! "$deployment_url" =~ ^https://[a-zA-Z0-9.-]+\.vercel\.app$ ]]; then
+            echo "::error::Vercel did not return a valid deployment URL. Check the CLI logs."
+            exit 1
+          fi
+          echo "url=$deployment_url" >> "$GITHUB_OUTPUT"
+          {
+            echo '## Vercel Production deployment'
+            echo "- Deployment: $deployment_url"
+            echo "- 中文首頁: $deployment_url/zh-TW"
+            echo "- English: $deployment_url/en-US"
+            echo "- 配置頁: $deployment_url/zh-TW/settings"
+            echo "- Commit: $GITHUB_SHA"
+            echo '- Use the production domain in Vercel Project → Settings → Domains as the permanent portfolio link.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: production-playwright-results
+          path: test-results/
+          retention-days: 7

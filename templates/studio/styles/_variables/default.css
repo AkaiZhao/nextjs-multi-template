@@ -1,0 +1,5 @@
+body[data-template='studio'] {
+  --display-font: 'Trebuchet MS', 'PingFang TC', sans-serif;
+  --card-radius: 0.45rem;
+  --content-width: 1500px;
+}
